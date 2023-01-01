@@ -6,12 +6,16 @@ import {
   useMap,
   Popup,
 } from "react-leaflet";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import L from "leaflet";
 import newMarker from "../data/pin.png";
 import tileLayer from "../util/tileLayer";
+import "leaflet-routing-machine";
+import "leaflet-routing-machine/dist/leaflet-routing-machine";
+import { useGeolocated } from "react-geolocated";
+import { Box, Container } from "@mui/system";
 
-const center = [50.0595, 19.9379];
+const center = [10.8538, 106.62814];
 
 const pointerIcon = new L.Icon({
   iconUrl: newMarker,
@@ -47,18 +51,72 @@ const customPopup = (
 
 // image
 const imageUrl =
-  "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Krakow_Center_-_basic_map.svg/1440px-Krakow_Center_-_basic_map.svg.png";
+  "https://firebasestorage.googleapis.com/v0/b/duantotnghiep-e8aff.appspot.com/o/images%2FmapHCM_photos_v2_x4_colored.jpg?alt=media&token=39546f12-1055-4fd1-abbe-7687594b1ad3";
 
 // add image to map ;)
 const imageBounds = [
-  [50.0665, 19.93],
-  [50.0522, 19.9455],
-];
+  [10.8398, 106.61814], //position x, y
+  // [10.8398, 146.61814], //position x, y
+  [10.8478, 106.62804],
+]; //         widtth
 
 const OverlayImage = () => {
   const map = useMap();
 
   map.fitBounds(imageBounds);
+
+  const [currentLocation, setCurrentLocation] = useState(undefined);
+  const { coords, isGeolocationAvailable, isGeolocationEnabled } =
+    useGeolocated({
+      positionOptions: {
+        enableHighAccuracy: false,
+      },
+      userDecisionTimeout: 5000,
+    });
+
+  useEffect(() => {
+    if (coords) {
+      setCurrentLocation([coords.longitude, coords.latitude]);
+    }
+  }, [coords]);
+
+  useEffect(() => {
+    if (currentLocation) {
+      L.Routing.control({
+        waypoints: [
+          L.latLng(currentLocation[1], currentLocation[0]),
+          L.latLng(10.852704, 106.629588),
+        ],
+        lineOptions: {
+          styles: [
+            {
+              color: "blue",
+              weight: 4,
+              opacity: 0.7,
+            },
+          ],
+        },
+        routeWhileDragging: false,
+        addWaypoints: false,
+        fitSelectedRoutes: false,
+        showAlternatives: false,
+        // autoRoute: true,
+      })
+        .addTo(map)
+        .on("routesfound", function (e) {
+          var routes = e.routes;
+          var summary = routes[0].summary;
+          // alert distance and time in km and minutes
+          // alert(
+          //   "Total distance is " +
+          //     summary.totalDistance / 1000 +
+          //     " km and total time is " +
+          //     Math.round((summary.totalTime % 3600) / 60) +
+          //     " minutes"
+          // );
+        });
+    }
+  }, [currentLocation]);
 
   return (
     <ImageOverlay
@@ -74,30 +132,33 @@ const MapWrapper = () => {
   const [map, setMap] = useState(null);
 
   return (
-    <MapContainer
-      whenCreated={setMap}
-      center={center}
-      zoom={15}
-      scrollWheelZoom={true}
-    >
-      <TileLayer {...tileLayer} />
-
-      <Marker
-        icon={pointerIcon}
-        position={center}
-        eventHandlers={{
-          click: (e) => {
-            map.setView(e.target.getLatLng(), 15);
-          },
-        }}
+    <Box height="100%" width="100%" position="fixed">
+      <MapContainer
+        style={{ height: "100%", width: "100%" }}
+        whenCreated={setMap}
+        center={center}
+        zoom={100}
+        scrollWheelZoom={true}
       >
-        <Popup keepInView={true} minWidth={220}>
-          {customPopup}
-        </Popup>
-      </Marker>
+        <TileLayer {...tileLayer} />
 
-      <OverlayImage />
-    </MapContainer>
+        <Marker
+          icon={pointerIcon}
+          position={center}
+          eventHandlers={{
+            click: (e) => {
+              map.setView(e.target.getLatLng(), 15);
+            },
+          }}
+        >
+          <Popup keepInView={true} minWidth={220}>
+            {customPopup}
+          </Popup>
+        </Marker>
+
+        {/* <OverlayImage /> */}
+      </MapContainer>
+    </Box>
   );
 };
 

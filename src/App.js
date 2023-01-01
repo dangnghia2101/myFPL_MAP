@@ -1,65 +1,25 @@
-import { lazy, useState, useCallback, useEffect, Suspense } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import {
+  HashRouter as Router,
   Redirect,
   Route,
-  useLocation,
   Switch,
-  HashRouter as Router,
+  useLocation,
 } from "react-router-dom";
-import GithubCorner from "./components/GithubCorner";
-import menu from "./data/menu.json";
 import "./App.css";
-
-import Header from "./components/Header";
-import Menu from "./components/Menu";
-import ButtonMenu from "./components/ButtonMenu";
-
-const address =
-  "https://github.com/tomik23/react-leaflet-examples/blob/main/src/pages/";
-
-const ChangeTitle = ({ title }) => {
-  const titleName = title.replace(/-/g, " ");
-  useEffect(() => {
-    document.title = titleName;
-  }, [titleName]);
-
-  return <h2 className="title">{titleName}</h2>;
-};
-
-const Info = ({ info }) => {
-  const { info: infoText } = menu.find((item) => item.link === info);
-
-  return infoText ? (
-    <small dangerouslySetInnerHTML={{ __html: infoText }} />
-  ) : (
-    ""
-  );
-};
+import menu from "./data/menu.json";
 
 const Child = ({ info, id, text }) => {
   const location = useLocation();
   const LoadComponent = lazy(() =>
     import(
-      /* webpackChunkName: "[request]" */ `./pages${location.pathname}.js`
+      /* webpackChunkName: "[request]" */ `./pages${location.pathname}.tsx`
     ).catch(() => import("./components/NotFound.js"))
-  );
-
-  const ShowSource = () => (
-    <div className="info-container">
-      <small>
-        <a target="_blank" rel="noreferrer" href={address + id + ".js"}>
-          sources
-        </a>
-      </small>
-      <Info info={location.pathname.replace(/\//, "")} />
-    </div>
   );
 
   return (
     <>
-      <ChangeTitle title={location.pathname.replace(/\//, " ")} />
       <LoadComponent />
-      <ShowSource />
     </>
   );
 };
@@ -76,14 +36,12 @@ function App() {
 
   return (
     <Router>
-      <div className="grid">
-        <Menu parentCallback={callback} />
-        <Header />
-        <main id="section-example">
-          <Suspense fallback={<div>Page is Loading...</div>}>
+      <div>
+        <main>
+          <Suspense fallback={<div></div>}>
             <Switch>
               <Route exact path="/">
-                <Redirect to="/simple-map" />
+                <Redirect to="/image-on-map" />
               </Route>
               <Route
                 path="/:id"
@@ -93,8 +51,6 @@ function App() {
           </Suspense>
         </main>
       </div>
-      <ButtonMenu />
-      <GithubCorner />
     </Router>
   );
 }
