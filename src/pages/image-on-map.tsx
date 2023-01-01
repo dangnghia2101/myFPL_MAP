@@ -60,7 +60,6 @@ type OverLayProps = {
   locationEnd: any;
   locationStart: any;
   setLengthRun: any;
-  tipChoose: number;
 };
 
 const customPopup = (
@@ -112,18 +111,11 @@ const OverlayImage: FC<OverLayProps> = ({
   setLengthRun,
 }) => {
   const map = useMap();
-  const routeControl = useRef<Control>(undefined);
-
-  const { coords, isGeolocationAvailable, isGeolocationEnabled } =
-    useGeolocated({
-      positionOptions: {
-        enableHighAccuracy: false,
-      },
-      userDecisionTimeout: 10000,
-    });
+  const routeControl = useRef<Control>();
 
   useEffect(() => {
     if (locationEnd && locationStart) {
+      console.log("routeControl.current ", routeControl.current);
       if (routeControl.current) {
         map.removeControl(routeControl.current);
       }
@@ -134,9 +126,9 @@ const OverlayImage: FC<OverLayProps> = ({
           L.latLng(locationEnd[0], locationEnd[1]),
         ],
 
-        lineOptions: {
-          styles: [{ color: "orange", opacity: 1, weight: 5 }],
-        },
+        // lineOptions: {
+        //   styles: [{ color: "orange", opacity: 1, weight: 5 }],
+        // },
         routeWhileDragging: true,
         addWaypoints: false,
         fitSelectedRoutes: false,
@@ -434,7 +426,6 @@ const MapWrapper = () => {
           locationStart={locationStart}
           locationEnd={locationEnd}
           setLengthRun={setLengthRun}
-          tipChoose={tipChoose.current}
         />
       </MapContainer>
     </Box>
