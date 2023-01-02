@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useEffect, useState } from "react";
+import { lazy, Suspense, useCallback, useState } from "react";
 import {
   HashRouter as Router,
   Redirect,
@@ -7,14 +7,13 @@ import {
   useLocation,
 } from "react-router-dom";
 import "./App.css";
-import menu from "./data/menu.json";
 
-const Child = ({ info, id, text }) => {
+const Child = () => {
   const location = useLocation();
   const LoadComponent = lazy(() =>
-    import(
-      /* webpackChunkName: "[request]" */ `./pages${location.pathname}.tsx`
-    ).catch(() => import("./components/NotFound.js"))
+    import("./pages/mapHcm/MapHcm.tsx").catch(() =>
+      import("./components/NotFound.tsx")
+    )
   );
 
   return (
@@ -28,11 +27,6 @@ function App() {
   const [info, setInfo] = useState("");
   const [id, setID] = useState("");
   const [text, setText] = useState("");
-  const callback = useCallback((id, text, info) => {
-    setInfo(info);
-    setID(id);
-    setText(text);
-  }, []);
 
   return (
     <Router>
@@ -41,7 +35,7 @@ function App() {
           <Suspense fallback={<div></div>}>
             <Switch>
               <Route exact path="/">
-                <Redirect to="/image-on-map" />
+                <Redirect to="/MapHcm" />
               </Route>
               <Route
                 path="/:id"

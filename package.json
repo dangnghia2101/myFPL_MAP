@@ -15,12 +15,15 @@
     "@turf/turf": "^6.4.0",
     "@types/leaflet": "^1.9.0",
     "@types/leaflet-routing-machine": "^3.2.4",
-    "gh-pages": "^3.2.3",
+    "@types/react-router-dom": "^5.3.3",
+    "gh-pages": "^4.0.0",
     "leaflet": "^1.7.1",
     "leaflet-draw": "^1.0.4",
     "leaflet-fullscreen": "^1.0.2",
     "leaflet-routing-machine": "^3.2.12",
+    "postcss-custom-properties-fallback": "^1.0.2",
     "react": "^17.0.2",
+    "react-alice-carousel": "^2.7.0",
     "react-dom": "^17.0.2",
     "react-geolocated": "^4.0.3",
     "react-leaflet": "^3.2.0",
@@ -28,6 +31,7 @@
     "react-leaflet-markercluster": "^3.0.0-rc1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "react-spring-bottom-sheet": "^3.4.1",
     "react-tabs": "^3.2.3",
     "sass": "^1.35.1",
     "styled-components": "^5.3.6",
@@ -53,5 +57,5 @@
     "not dead",
     "not op_mini all"
   ],
-  "homepage": "https://tomik23.github.io/react-leaflet-examples"
+  "homepage": "https://dangnghia2101.github.io/myFPL_MAP/"
 }
